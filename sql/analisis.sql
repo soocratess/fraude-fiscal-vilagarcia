@@ -1,7 +1,10 @@
 -- =============================================================================
 -- ANÁLISIS DE CONTRATOS MENORES — Ayuntamiento de Vilagarcía de Arousa
 -- Esquema en estrella: FACT_CONTRATOS + DIM_CONTRATISTA + DIM_FECHA
---                      + DIM_TIPO_CONTRATO + DIM_ENTIDAD
+--
+-- Tablas eliminadas del diseño original (ver notebook 03 para justificación):
+--   - DIM_TIPO_CONTRATO → tipo_contrato va directo en FACT (4 valores, sin atributos variables)
+--   - DIM_ENTIDAD       → entidad_contratante es constante en todo el dataset
 -- =============================================================================
 
 
@@ -11,14 +14,14 @@
 -- Permite detectar años con un incremento inusual de actividad.
 -- -----------------------------------------------------------------------------
 SELECT
-    f.anio_contrato,
+    anio_contrato,
     COUNT(*)                                AS num_contratos,
-    ROUND(SUM(f.importe_con_iva_eur), 2)    AS total_eur,
-    ROUND(AVG(f.importe_con_iva_eur), 2)    AS media_eur,
-    ROUND(MAX(f.importe_con_iva_eur), 2)    AS max_eur
-FROM FACT_CONTRATOS f
-GROUP BY f.anio_contrato
-ORDER BY f.anio_contrato;
+    ROUND(SUM(importe_con_iva_eur), 2)      AS total_eur,
+    ROUND(AVG(importe_con_iva_eur), 2)      AS media_eur,
+    ROUND(MAX(importe_con_iva_eur), 2)      AS max_eur
+FROM FACT_CONTRATOS
+GROUP BY anio_contrato
+ORDER BY anio_contrato;
 
 
 -- -----------------------------------------------------------------------------
@@ -27,19 +30,18 @@ ORDER BY f.anio_contrato;
 -- de forma sistemática.
 -- -----------------------------------------------------------------------------
 SELECT
-    t.tipo_contrato,
+    tipo_contrato,
     COUNT(*)                               AS num_contratos,
-    ROUND(SUM(f.importe_con_iva_eur), 2)   AS total_eur,
-    ROUND(AVG(f.importe_con_iva_eur), 2)   AS media_eur,
+    ROUND(SUM(importe_con_iva_eur), 2)     AS total_eur,
+    ROUND(AVG(importe_con_iva_eur), 2)     AS media_eur,
     -- porcentaje sobre el gasto total
     ROUND(
-        100.0 * SUM(f.importe_con_iva_eur)
-        / SUM(SUM(f.importe_con_iva_eur)) OVER (),
+        100.0 * SUM(importe_con_iva_eur)
+        / SUM(SUM(importe_con_iva_eur)) OVER (),
         1
     )                                      AS pct_gasto
-FROM FACT_CONTRATOS    f
-JOIN DIM_TIPO_CONTRATO t ON f.tipo_contrato_key = t.tipo_contrato_key
-GROUP BY t.tipo_contrato
+FROM FACT_CONTRATOS
+GROUP BY tipo_contrato
 ORDER BY total_eur DESC;
 
 
@@ -70,22 +72,21 @@ LIMIT 20;
 -- evitar licitación pública.
 -- -----------------------------------------------------------------------------
 SELECT
-    f.flag_limite,
-    t.tipo_contrato,
+    flag_limite,
+    tipo_contrato,
     COUNT(*)                              AS num_contratos,
-    ROUND(SUM(f.importe_con_iva_eur), 2)  AS total_eur,
-    ROUND(MIN(f.importe_con_iva_eur), 2)  AS min_eur,
-    ROUND(MAX(f.importe_con_iva_eur), 2)  AS max_eur
-FROM FACT_CONTRATOS    f
-JOIN DIM_TIPO_CONTRATO t ON f.tipo_contrato_key = t.tipo_contrato_key
-GROUP BY f.flag_limite, t.tipo_contrato
+    ROUND(SUM(importe_con_iva_eur), 2)    AS total_eur,
+    ROUND(MIN(importe_con_iva_eur), 2)    AS min_eur,
+    ROUND(MAX(importe_con_iva_eur), 2)    AS max_eur
+FROM FACT_CONTRATOS
+GROUP BY flag_limite, tipo_contrato
 ORDER BY
-    CASE f.flag_limite
+    CASE flag_limite
         WHEN 'supera_limite'    THEN 1
         WHEN 'cerca_del_limite' THEN 2
         ELSE 3
     END,
-    t.tipo_contrato;
+    tipo_contrato;
 
 
 -- -----------------------------------------------------------------------------
@@ -96,15 +97,14 @@ ORDER BY
 SELECT
     f.num_referencia,
     f.anio_contrato,
-    t.tipo_contrato,
+    f.tipo_contrato,
     f.objeto_contrato,
     c.nombre_contratista,
     c.nif_contratista,
     ROUND(f.importe_con_iva_eur, 2)  AS importe_con_iva_eur,
     f.fecha_estimada
-FROM FACT_CONTRATOS    f
-JOIN DIM_TIPO_CONTRATO t ON f.tipo_contrato_key = t.tipo_contrato_key
-JOIN DIM_CONTRATISTA   c ON f.nif_contratista   = c.nif_contratista
+FROM FACT_CONTRATOS  f
+JOIN DIM_CONTRATISTA c ON f.nif_contratista = c.nif_contratista
 WHERE f.flag_limite = 'supera_limite'
 ORDER BY f.importe_con_iva_eur DESC;
 
@@ -117,14 +117,13 @@ ORDER BY f.importe_con_iva_eur DESC;
 SELECT
     c.nombre_contratista,
     c.nif_contratista,
-    t.tipo_contrato,
+    f.tipo_contrato,
     COUNT(*)                              AS contratos_cerca_limite,
     ROUND(SUM(f.importe_con_iva_eur), 2)  AS acumulado_eur
-FROM FACT_CONTRATOS    f
-JOIN DIM_TIPO_CONTRATO t ON f.tipo_contrato_key = t.tipo_contrato_key
-JOIN DIM_CONTRATISTA   c ON f.nif_contratista   = c.nif_contratista
+FROM FACT_CONTRATOS  f
+JOIN DIM_CONTRATISTA c ON f.nif_contratista = c.nif_contratista
 WHERE f.flag_limite IN ('cerca_del_limite', 'supera_limite')
-GROUP BY c.nombre_contratista, c.nif_contratista, t.tipo_contrato
+GROUP BY c.nombre_contratista, c.nif_contratista, f.tipo_contrato
 HAVING COUNT(*) >= 2
 ORDER BY acumulado_eur DESC;
 
@@ -188,13 +187,11 @@ LIMIT 30;
 -- Vista rápida de los indicadores clave para el dashboard de Power BI.
 -- -----------------------------------------------------------------------------
 SELECT
-    COUNT(*)                                                          AS total_contratos,
-    COUNT(DISTINCT f.anio_contrato)                                   AS anios_cubiertos,
-    COUNT(DISTINCT f.nif_contratista)                                 AS empresas_distintas,
-    ROUND(SUM(f.importe_con_iva_eur), 2)                              AS gasto_total_eur,
-    ROUND(AVG(f.importe_con_iva_eur), 2)                              AS gasto_medio_eur,
-    SUM(CASE WHEN f.flag_limite = 'supera_limite'    THEN 1 ELSE 0 END) AS contratos_ilegales,
-    SUM(CASE WHEN f.flag_limite = 'cerca_del_limite' THEN 1 ELSE 0 END) AS contratos_en_riesgo,
-    SUM(CASE WHEN c.nif_valido  = FALSE              THEN 1 ELSE 0 END) AS nif_invalidos
-FROM FACT_CONTRATOS  f
-JOIN DIM_CONTRATISTA c ON f.nif_contratista = c.nif_contratista;
+    COUNT(*)                                                            AS total_contratos,
+    COUNT(DISTINCT anio_contrato)                                       AS anios_cubiertos,
+    COUNT(DISTINCT nif_contratista)                                     AS empresas_distintas,
+    ROUND(SUM(importe_con_iva_eur), 2)                                  AS gasto_total_eur,
+    ROUND(AVG(importe_con_iva_eur), 2)                                  AS gasto_medio_eur,
+    SUM(CASE WHEN flag_limite = 'supera_limite'    THEN 1 ELSE 0 END)   AS contratos_ilegales,
+    SUM(CASE WHEN flag_limite = 'cerca_del_limite' THEN 1 ELSE 0 END)   AS contratos_en_riesgo
+FROM FACT_CONTRATOS;
