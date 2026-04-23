@@ -102,7 +102,7 @@ SELECT
     c.nombre_contratista,
     c.nif_contratista,
     ROUND(f.importe_con_iva_eur, 2)  AS importe_con_iva_eur,
-    f.fecha_estimada
+    f.fecha
 FROM FACT_CONTRATOS  f
 JOIN DIM_CONTRATISTA c ON f.nif_contratista = c.nif_contratista
 WHERE f.flag_limite = 'supera_limite'
@@ -158,7 +158,7 @@ SELECT
     COUNT(*)                              AS num_contratos,
     ROUND(SUM(f.importe_con_iva_eur), 2)  AS total_eur
 FROM FACT_CONTRATOS f
-JOIN DIM_FECHA      d ON f.fecha_estimada = d.fecha
+JOIN DIM_FECHA      d ON f.fecha = d.fecha
 GROUP BY d.anio, d.mes, d.nombre_mes
 ORDER BY d.anio, d.mes;
 
