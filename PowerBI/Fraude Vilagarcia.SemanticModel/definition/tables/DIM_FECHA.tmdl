@@ -16,23 +16,21 @@ table DIM_FECHA
 
 	column ANIO
 		dataType: double
+		formatString: 0
 		lineageTag: 804cd052-baf5-4819-97dc-5311597f8c8a
 		summarizeBy: sum
 		sourceColumn: ANIO
 
 		annotation SummarizationSetBy = Automatic
 
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
-
 	column TRIMESTRE
 		dataType: double
+		formatString: 0
 		lineageTag: 2cd99989-87e6-444d-a8e4-32b54e157ed0
 		summarizeBy: sum
 		sourceColumn: TRIMESTRE
 
 		annotation SummarizationSetBy = Automatic
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column MES
 		dataType: double

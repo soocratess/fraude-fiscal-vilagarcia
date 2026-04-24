@@ -1,40 +1,59 @@
 -- =============================================================================
 -- ANÁLISIS DE CONTRATOS MENORES — Ayuntamiento de Vilagarcía de Arousa
--- Esquema en estrella: FACT_CONTRATOS + DIM_CONTRATISTA + DIM_FECHA
 --
--- Tablas eliminadas del diseño original (ver notebook 03 para justificación):
---   - DIM_TIPO_CONTRATO → tipo_contrato va directo en FACT (4 valores, sin atributos variables)
---   - DIM_ENTIDAD       → entidad_contratante es constante en todo el dataset
+-- Esquema en estrella: FACT_CONTRATOS + DIM_CONTRATISTA + DIM_FECHA
+-- Los importes se reportan con IVA (columna importe_con_iva_eur), coherente
+-- con la medida "Gasto Total" del informe de Power BI.
+--
+-- Las consultas se ordenan de general a específico: primero los KPIs globales
+-- y la distribución por año / tipo / empresa (respuestas directas al brief)
+-- y después dos análisis específicos del dominio de detección de fraude.
 -- =============================================================================
 
 
 -- -----------------------------------------------------------------------------
--- Q1: Volumen de contratación por año
--- Cuántos contratos se firmaron cada año y cuánto dinero movieron.
--- Permite detectar años con un incremento inusual de actividad.
+-- Q1: Resumen ejecutivo — KPIs globales del dataset
+-- Fila única con los indicadores clave. Responde a "¿cuántos contratos?" y
+-- "¿cuál es el importe total y el importe medio?" del brief.
+-- -----------------------------------------------------------------------------
+SELECT
+    COUNT(*)                                                            AS total_contratos,
+    COUNT(DISTINCT anio_contrato)                                       AS anios_cubiertos,
+    COUNT(DISTINCT nif_contratista)                                     AS empresas_distintas,
+    ROUND(SUM(importe_con_iva_eur), 2)                                  AS gasto_total_eur,
+    ROUND(AVG(importe_con_iva_eur), 2)                                  AS gasto_medio_eur,
+    SUM(CASE WHEN flag_limite = 'cerca_del_limite' THEN 1 ELSE 0 END)   AS contratos_cerca_limite
+FROM FACT_CONTRATOS;
+
+
+-- -----------------------------------------------------------------------------
+-- Q2: Volumen de contratación por año
+-- Responde a "¿cuántos contratos se han realizado por año?" del brief.
+-- Permite detectar años con incremento inusual de actividad o huecos en la
+-- publicación.
 -- -----------------------------------------------------------------------------
 SELECT
     anio_contrato,
-    COUNT(*)                                AS num_contratos,
-    ROUND(SUM(importe_con_iva_eur), 2)      AS total_eur,
-    ROUND(AVG(importe_con_iva_eur), 2)      AS media_eur,
-    ROUND(MAX(importe_con_iva_eur), 2)      AS max_eur
+    COUNT(*)                              AS num_contratos,
+    ROUND(SUM(importe_con_iva_eur), 2)    AS total_eur,
+    ROUND(AVG(importe_con_iva_eur), 2)    AS media_eur,
+    ROUND(MAX(importe_con_iva_eur), 2)    AS max_eur
 FROM FACT_CONTRATOS
 GROUP BY anio_contrato
 ORDER BY anio_contrato;
 
 
 -- -----------------------------------------------------------------------------
--- Q2: Volumen por tipo de contrato (Obras / Servicios / Suministros / Privado)
--- Revela qué categoría concentra más gasto y si alguna roza el límite legal
--- de forma sistemática.
+-- Q3: Volumen por tipo de contrato (Obras / Servicios / Suministros / Privado)
+-- Usado como proxy de la pregunta "qué áreas municipales gastan más" del brief,
+-- ya que el dataset no incluye área o departamento (ver README, sección
+-- Limitaciones). Muestra qué categoría concentra más gasto y su peso relativo.
 -- -----------------------------------------------------------------------------
 SELECT
     tipo_contrato,
     COUNT(*)                               AS num_contratos,
     ROUND(SUM(importe_con_iva_eur), 2)     AS total_eur,
     ROUND(AVG(importe_con_iva_eur), 2)     AS media_eur,
-    -- porcentaje sobre el gasto total
     ROUND(
         100.0 * SUM(importe_con_iva_eur)
         / SUM(SUM(importe_con_iva_eur)) OVER (),
@@ -46,7 +65,8 @@ ORDER BY total_eur DESC;
 
 
 -- -----------------------------------------------------------------------------
--- Q3: Top 20 empresas adjudicatarias por importe total
+-- Q4: Top 20 empresas adjudicatarias por importe total
+-- Responde a "¿qué empresas concentran mayor volumen de gasto?" del brief.
 -- Una concentración elevada de contratos en pocas empresas puede indicar
 -- favoritismo o falta de concurrencia real en la licitación.
 -- -----------------------------------------------------------------------------
@@ -66,72 +86,10 @@ LIMIT 20;
 
 
 -- -----------------------------------------------------------------------------
--- Q4: Contratos que superan o rozan el límite legal (flag_limite)
--- Los contratos «cerca_del_limite» y «supera_limite» son los de mayor riesgo:
--- importes próximos al umbral pueden indicar fragmentación deliberada para
--- evitar licitación pública.
--- -----------------------------------------------------------------------------
-SELECT
-    flag_limite,
-    tipo_contrato,
-    COUNT(*)                              AS num_contratos,
-    ROUND(SUM(importe_con_iva_eur), 2)    AS total_eur,
-    ROUND(MIN(importe_con_iva_eur), 2)    AS min_eur,
-    ROUND(MAX(importe_con_iva_eur), 2)    AS max_eur
-FROM FACT_CONTRATOS
-GROUP BY flag_limite, tipo_contrato
-ORDER BY
-    CASE flag_limite
-        WHEN 'supera_limite'    THEN 1
-        WHEN 'cerca_del_limite' THEN 2
-        ELSE 3
-    END,
-    tipo_contrato;
-
-
--- -----------------------------------------------------------------------------
--- Q5: Detalle de los contratos que superan el límite legal
--- Lista individual de expedientes donde el importe supera el umbral permitido
--- para contratos menores. Cada uno debería haberse licitado públicamente.
--- -----------------------------------------------------------------------------
-SELECT
-    f.num_referencia,
-    f.anio_contrato,
-    f.tipo_contrato,
-    f.objeto_contrato,
-    c.nombre_contratista,
-    c.nif_contratista,
-    ROUND(f.importe_con_iva_eur, 2)  AS importe_con_iva_eur,
-    f.fecha
-FROM FACT_CONTRATOS  f
-JOIN DIM_CONTRATISTA c ON f.nif_contratista = c.nif_contratista
-WHERE f.flag_limite = 'supera_limite'
-ORDER BY f.importe_con_iva_eur DESC;
-
-
--- -----------------------------------------------------------------------------
--- Q6: Empresas que acumulan múltiples contratos cercanos al límite
--- Si una empresa recibe varios contratos que individualmente rozan el tope,
--- la suma total puede suponer una adjudicación encubierta sin licitación.
--- -----------------------------------------------------------------------------
-SELECT
-    c.nombre_contratista,
-    c.nif_contratista,
-    f.tipo_contrato,
-    COUNT(*)                              AS contratos_cerca_limite,
-    ROUND(SUM(f.importe_con_iva_eur), 2)  AS acumulado_eur
-FROM FACT_CONTRATOS  f
-JOIN DIM_CONTRATISTA c ON f.nif_contratista = c.nif_contratista
-WHERE f.flag_limite IN ('cerca_del_limite', 'supera_limite')
-GROUP BY c.nombre_contratista, c.nif_contratista, f.tipo_contrato
-HAVING COUNT(*) >= 2
-ORDER BY acumulado_eur DESC;
-
-
--- -----------------------------------------------------------------------------
--- Q7: Contratistas con NIF/CIF inválido
--- Un NIF que no supera el checksum puede indicar un error de registro o,
--- en casos extremos, una empresa ficticia.
+-- Q5 (específica del dominio): Contratistas con NIF/CIF inválido
+-- El NIF se valida con el algoritmo oficial de la AEAT. Un identificador que
+-- no supera el checksum o tiene longitud anómala indica, como mínimo, un error
+-- de captura; en casos extremos puede apuntar a datos falseados.
 -- -----------------------------------------------------------------------------
 SELECT
     c.nif_contratista,
@@ -147,51 +105,23 @@ ORDER BY total_eur DESC;
 
 
 -- -----------------------------------------------------------------------------
--- Q8: Distribución mensual de contratos usando DIM_FECHA
--- Detecta si hay meses con una concentración inusual de adjudicaciones,
--- por ejemplo al final del ejercicio presupuestario (noviembre-diciembre).
+-- Q6 (específica del dominio): Empresas con múltiples contratos cerca del límite
+-- Se marca como "cerca_del_limite" todo contrato cuyo importe supera el 90 %
+-- del umbral legal (15.000 € servicios/suministros, 40.000 € obras). Una misma
+-- empresa con varios contratos rozando el tope puede estar recibiendo un
+-- contrato fragmentado para evitar licitar por procedimiento abierto.
+-- Se agrupa por NIF (no por nombre) para capturar casos de la misma empresa
+-- publicada con grafías distintas.
 -- -----------------------------------------------------------------------------
 SELECT
-    d.anio,
-    d.mes,
-    d.nombre_mes,
-    COUNT(*)                              AS num_contratos,
-    ROUND(SUM(f.importe_con_iva_eur), 2)  AS total_eur
-FROM FACT_CONTRATOS f
-JOIN DIM_FECHA      d ON f.fecha = d.fecha
-GROUP BY d.anio, d.mes, d.nombre_mes
-ORDER BY d.anio, d.mes;
-
-
--- -----------------------------------------------------------------------------
--- Q9: Objeto de contrato más repetido por empresa (posible fragmentación)
--- Si el mismo objeto aparece adjudicado múltiples veces al mismo contratista,
--- puede ser un indicio de que se ha troceado un contrato mayor para evitar
--- superar el límite legal.
--- -----------------------------------------------------------------------------
-SELECT
-    f.objeto_contrato,
+    c.nif_contratista,
     c.nombre_contratista,
-    COUNT(*)                              AS veces,
-    ROUND(SUM(f.importe_con_iva_eur), 2)  AS total_eur
+    f.tipo_contrato,
+    COUNT(*)                              AS contratos_cerca_limite,
+    ROUND(SUM(f.importe_con_iva_eur), 2)  AS acumulado_eur
 FROM FACT_CONTRATOS  f
 JOIN DIM_CONTRATISTA c ON f.nif_contratista = c.nif_contratista
-GROUP BY f.objeto_contrato, c.nombre_contratista
-HAVING COUNT(*) >= 3
-ORDER BY veces DESC, total_eur DESC
-LIMIT 30;
-
-
--- -----------------------------------------------------------------------------
--- Q10: Resumen ejecutivo — KPIs globales del dataset
--- Vista rápida de los indicadores clave para el dashboard de Power BI.
--- -----------------------------------------------------------------------------
-SELECT
-    COUNT(*)                                                            AS total_contratos,
-    COUNT(DISTINCT anio_contrato)                                       AS anios_cubiertos,
-    COUNT(DISTINCT nif_contratista)                                     AS empresas_distintas,
-    ROUND(SUM(importe_con_iva_eur), 2)                                  AS gasto_total_eur,
-    ROUND(AVG(importe_con_iva_eur), 2)                                  AS gasto_medio_eur,
-    SUM(CASE WHEN flag_limite = 'supera_limite'    THEN 1 ELSE 0 END)   AS contratos_ilegales,
-    SUM(CASE WHEN flag_limite = 'cerca_del_limite' THEN 1 ELSE 0 END)   AS contratos_en_riesgo
-FROM FACT_CONTRATOS;
+WHERE f.flag_limite = 'cerca_del_limite'
+GROUP BY c.nif_contratista, c.nombre_contratista, f.tipo_contrato
+HAVING COUNT(*) >= 2
+ORDER BY acumulado_eur DESC;

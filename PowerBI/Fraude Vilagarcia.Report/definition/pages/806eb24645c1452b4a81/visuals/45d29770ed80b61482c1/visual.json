@@ -1,0 +1,199 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "45d29770ed80b61482c1",
+  "position": {
+    "x": 280,
+    "y": 427.14285714285717,
+    "z": 9000,
+    "height": 272.85714285714289,
+    "width": 978.57142857142867,
+    "tabOrder": 9000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DIM_CONTRATISTA"
+                    }
+                  },
+                  "Property": "NIF_CONTRATISTA"
+                }
+              },
+              "queryRef": "DIM_CONTRATISTA.NIF_CONTRATISTA",
+              "nativeQueryRef": "NIF_CONTRATISTA"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DIM_CONTRATISTA"
+                    }
+                  },
+                  "Property": "NOMBRE_CONTRATISTA"
+                }
+              },
+              "queryRef": "DIM_CONTRATISTA.NOMBRE_CONTRATISTA",
+              "nativeQueryRef": "NOMBRE_CONTRATISTA"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DIM_CONTRATISTA"
+                    }
+                  },
+                  "Property": "MOTIVO_INVALIDO"
+                }
+              },
+              "queryRef": "DIM_CONTRATISTA.MOTIVO_INVALIDO",
+              "nativeQueryRef": "MOTIVO_INVALIDO"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FACT_CONTRATOS"
+                    }
+                  },
+                  "Property": "Gasto Total"
+                }
+              },
+              "queryRef": "FACT_CONTRATOS.Gasto Total",
+              "nativeQueryRef": "Gasto Total"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "DIM_CONTRATISTA"
+                  }
+                },
+                "Property": "NOMBRE_CONTRATISTA"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'NIFs inválidos'"
+                }
+              }
+            },
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "25ac19f861aa137ac80a",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FACT_CONTRATOS"
+              }
+            },
+            "Property": "FLAG_LIMITE"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User"
+      },
+      {
+        "name": "ef6d190ee9d000b85701",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DIM_CONTRATISTA"
+              }
+            },
+            "Property": "NIF_VALIDO"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "d",
+              "Entity": "DIM_CONTRATISTA",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "d"
+                          }
+                        },
+                        "Property": "NIF_VALIDO"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "false"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
+  }
+}

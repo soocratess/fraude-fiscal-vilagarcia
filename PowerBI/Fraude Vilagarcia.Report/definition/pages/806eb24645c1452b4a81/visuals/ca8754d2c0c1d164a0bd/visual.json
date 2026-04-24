@@ -1,38 +1,19 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
-  "name": "e2d86874041581991a7d",
+  "name": "ca8754d2c0c1d164a0bd",
   "position": {
-    "x": 860.90909090909088,
-    "y": 138.18181818181816,
-    "z": 6000,
-    "height": 264.5454545454545,
-    "width": 419.09090909090907,
+    "x": 0,
+    "y": 201.42857142857144,
+    "z": 5000,
+    "height": 150,
+    "width": 280,
     "tabOrder": 5000
   },
   "visual": {
-    "visualType": "donutChart",
+    "visualType": "cardVisual",
     "query": {
       "queryState": {
-        "Category": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "FACT_CONTRATOS"
-                    }
-                  },
-                  "Property": "TIPO_CONTRATO"
-                }
-              },
-              "queryRef": "FACT_CONTRATOS.TIPO_CONTRATO",
-              "nativeQueryRef": "TIPO_CONTRATO",
-              "active": true
-            }
-          ]
-        },
-        "Y": {
+        "Data": {
           "projections": [
             {
               "field": {
@@ -42,11 +23,11 @@
                       "Entity": "FACT_CONTRATOS"
                     }
                   },
-                  "Property": "Gasto Total"
+                  "Property": "Contratos Cerca del Limite"
                 }
               },
-              "queryRef": "FACT_CONTRATOS.Gasto Total",
-              "nativeQueryRef": "Gasto Total"
+              "queryRef": "FACT_CONTRATOS.Contratos Cerca del Limite",
+              "nativeQueryRef": "Contratos Cerca del Limite"
             }
           ]
         }
@@ -61,7 +42,7 @@
                     "Entity": "FACT_CONTRATOS"
                   }
                 },
-                "Property": "Gasto Total"
+                "Property": "Contratos Cerca del Limite"
               }
             },
             "direction": "Descending"

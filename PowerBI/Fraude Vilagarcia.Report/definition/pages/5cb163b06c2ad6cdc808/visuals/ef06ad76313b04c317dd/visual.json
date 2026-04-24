@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
   "name": "ef06ad76313b04c317dd",
   "position": {
-    "x": 0,
-    "y": 413,
-    "z": 4002,
-    "height": 282,
-    "width": 688,
-    "tabOrder": 4002
+    "x": 217.09251101321587,
+    "y": 411.62995594713658,
+    "z": 7000,
+    "height": 308.72246696035245,
+    "width": 644.22907488986789,
+    "tabOrder": 6000
   },
   "visual": {
     "visualType": "barChart",
@@ -75,7 +75,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "425db58cc0187b834009",
+        "name": "187b5736259e3e4eab3b",
         "field": {
           "Column": {
             "Expression": {
@@ -86,36 +86,94 @@
             "Property": "NOMBRE_CONTRATISTA"
           }
         },
-        "type": "Categorical"
-      },
-      {
-        "name": "ed37c4c5324b0d6d0568",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "FACT_CONTRATOS"
-              }
+        "type": "TopN",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "subquery",
+              "Expression": {
+                "Subquery": {
+                  "Query": {
+                    "Version": 2,
+                    "From": [
+                      {
+                        "Name": "d",
+                        "Entity": "DIM_CONTRATISTA",
+                        "Type": 0
+                      },
+                      {
+                        "Name": "f",
+                        "Entity": "FACT_CONTRATOS",
+                        "Type": 0
+                      }
+                    ],
+                    "Select": [
+                      {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "d"
+                            }
+                          },
+                          "Property": "NOMBRE_CONTRATISTA"
+                        },
+                        "Name": "field"
+                      }
+                    ],
+                    "OrderBy": [
+                      {
+                        "Direction": 2,
+                        "Expression": {
+                          "Measure": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "f"
+                              }
+                            },
+                            "Property": "Gasto Total"
+                          }
+                        }
+                      }
+                    ],
+                    "Top": 10
+                  }
+                }
+              },
+              "Type": 2
             },
-            "Property": "Gasto Total"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "b99635daccc82b476ca2",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "FACT_CONTRATOS"
+            {
+              "Name": "d",
+              "Entity": "DIM_CONTRATISTA",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "d"
+                          }
+                        },
+                        "Property": "NOMBRE_CONTRATISTA"
+                      }
+                    }
+                  ],
+                  "Table": {
+                    "SourceRef": {
+                      "Source": "subquery"
+                    }
+                  }
+                }
               }
-            },
-            "Property": "Gasto Total"
-          }
-        },
-        "type": "Advanced",
-        "howCreated": "User"
+            }
+          ]
+        }
       }
     ]
   }

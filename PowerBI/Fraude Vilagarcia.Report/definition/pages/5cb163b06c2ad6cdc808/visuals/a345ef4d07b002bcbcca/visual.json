@@ -1,19 +1,38 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
-  "name": "e2d86874041581991a7d",
+  "name": "a345ef4d07b002bcbcca",
   "position": {
-    "x": 860.90909090909088,
-    "y": 138.18181818181816,
-    "z": 6000,
-    "height": 264.5454545454545,
-    "width": 419.09090909090907,
-    "tabOrder": 5000
+    "x": 861.3215859030837,
+    "y": 413.03964757709252,
+    "z": 8000,
+    "height": 307.31277533039651,
+    "width": 420.08810572687224,
+    "tabOrder": 7000
   },
   "visual": {
-    "visualType": "donutChart",
+    "visualType": "barChart",
     "query": {
       "queryState": {
         "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DIM_FECHA"
+                    }
+                  },
+                  "Property": "ANIO"
+                }
+              },
+              "queryRef": "DIM_FECHA.ANIO",
+              "nativeQueryRef": "Suma de ANIO",
+              "active": true
+            }
+          ]
+        },
+        "Series": {
           "projections": [
             {
               "field": {
@@ -27,8 +46,7 @@
                 }
               },
               "queryRef": "FACT_CONTRATOS.TIPO_CONTRATO",
-              "nativeQueryRef": "TIPO_CONTRATO",
-              "active": true
+              "nativeQueryRef": "TIPO_CONTRATO"
             }
           ]
         },

@@ -120,43 +120,39 @@ table FACT_CONTRATOS
 
 	column VALOR_ESTIMADO_EUR
 		dataType: double
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
 		lineageTag: 1a09631a-d6c5-45af-9708-add533fa93e4
 		summarizeBy: sum
 		sourceColumn: VALOR_ESTIMADO_EUR
 
 		annotation SummarizationSetBy = Automatic
 
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
-
 	column PRESUPUESTO_BASE_EUR
 		dataType: double
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
 		lineageTag: 1aa14868-2e01-4429-91b0-3cf6ed0b8b4b
 		summarizeBy: sum
 		sourceColumn: PRESUPUESTO_BASE_EUR
 
 		annotation SummarizationSetBy = Automatic
 
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
-
 	column IMPORTE_SIN_IVA_EUR
 		dataType: double
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
 		lineageTag: e3bb6d0b-2b39-4416-ad69-56c579a037d0
 		summarizeBy: sum
 		sourceColumn: IMPORTE_SIN_IVA_EUR
 
 		annotation SummarizationSetBy = Automatic
 
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
-
 	column IMPORTE_CON_IVA_EUR
 		dataType: double
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
 		lineageTag: c76d8a49-dc0b-4c6e-aeab-1d56a40600f9
 		summarizeBy: sum
 		sourceColumn: IMPORTE_CON_IVA_EUR
 
 		annotation SummarizationSetBy = Automatic
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column FLAG_LIMITE
 		dataType: string
