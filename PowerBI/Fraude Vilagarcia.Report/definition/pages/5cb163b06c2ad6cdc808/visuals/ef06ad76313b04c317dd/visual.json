@@ -1,0 +1,122 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "ef06ad76313b04c317dd",
+  "position": {
+    "x": 0,
+    "y": 413,
+    "z": 4002,
+    "height": 282,
+    "width": 688,
+    "tabOrder": 4002
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DIM_CONTRATISTA"
+                    }
+                  },
+                  "Property": "NOMBRE_CONTRATISTA"
+                }
+              },
+              "queryRef": "DIM_CONTRATISTA.NOMBRE_CONTRATISTA",
+              "nativeQueryRef": "NOMBRE_CONTRATISTA",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FACT_CONTRATOS"
+                    }
+                  },
+                  "Property": "Gasto Total"
+                }
+              },
+              "queryRef": "FACT_CONTRATOS.Gasto Total",
+              "nativeQueryRef": "Gasto Total"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "FACT_CONTRATOS"
+                  }
+                },
+                "Property": "Gasto Total"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "425db58cc0187b834009",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DIM_CONTRATISTA"
+              }
+            },
+            "Property": "NOMBRE_CONTRATISTA"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "ed37c4c5324b0d6d0568",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FACT_CONTRATOS"
+              }
+            },
+            "Property": "Gasto Total"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "b99635daccc82b476ca2",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FACT_CONTRATOS"
+              }
+            },
+            "Property": "Gasto Total"
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      }
+    ]
+  }
+}

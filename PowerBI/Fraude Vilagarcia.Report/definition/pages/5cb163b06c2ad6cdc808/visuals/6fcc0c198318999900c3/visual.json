@@ -1,0 +1,136 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "6fcc0c198318999900c3",
+  "position": {
+    "x": 0,
+    "y": 121.23348017621146,
+    "z": 4000,
+    "height": 281.93832599118946,
+    "width": 687.92951541850221,
+    "tabOrder": 4000
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DIM_FECHA"
+                    }
+                  },
+                  "Property": "ANIO"
+                }
+              },
+              "queryRef": "DIM_FECHA.ANIO",
+              "nativeQueryRef": "ANIO",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "DIM_FECHA"
+                    }
+                  },
+                  "Property": "NOMBRE_MES"
+                }
+              },
+              "queryRef": "DIM_FECHA.NOMBRE_MES",
+              "nativeQueryRef": "NOMBRE_MES",
+              "active": false
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FACT_CONTRATOS"
+                    }
+                  },
+                  "Property": "Gasto Total"
+                }
+              },
+              "queryRef": "FACT_CONTRATOS.Gasto Total",
+              "nativeQueryRef": "Gasto Total"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "FACT_CONTRATOS"
+                  }
+                },
+                "Property": "Gasto Total"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "409dbe79669c1526865d",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DIM_FECHA"
+              }
+            },
+            "Property": "NOMBRE_MES"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "f7e7503eb3d10d083d80",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "DIM_FECHA"
+              }
+            },
+            "Property": "ANIO"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "95b6ad5cd796b90528b3",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FACT_CONTRATOS"
+              }
+            },
+            "Property": "Gasto Total"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

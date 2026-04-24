@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Fraude Vilagarcia"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "c5c668fe-e8d0-4779-ae08-d0cdad7b1d0a"
+  }
+}

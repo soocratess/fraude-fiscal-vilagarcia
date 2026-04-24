@@ -1,0 +1,22 @@
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-ES
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["DIM_CONTRATISTA","DIM_FECHA","FACT_CONTRATOS"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table DIM_CONTRATISTA
+ref table DIM_FECHA
+ref table DateTableTemplate_0d179a27-3ea1-4a1b-aac3-98d5d3412042
+ref table FACT_CONTRATOS
+ref table LocalDateTable_c631c40e-de66-4cb3-8d07-d6f5d54f5432
+
+ref cultureInfo es-ES
+

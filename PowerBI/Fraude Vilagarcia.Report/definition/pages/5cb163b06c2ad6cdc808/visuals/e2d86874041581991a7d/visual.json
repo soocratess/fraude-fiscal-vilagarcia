@@ -1,0 +1,107 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "e2d86874041581991a7d",
+  "position": {
+    "x": 727.40088105726875,
+    "y": 121.23348017621146,
+    "z": 4001,
+    "height": 281.93832599118946,
+    "width": 535.68281938325993,
+    "tabOrder": 4001
+  },
+  "visual": {
+    "visualType": "donutChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FACT_CONTRATOS"
+                    }
+                  },
+                  "Property": "TIPO_CONTRATO"
+                }
+              },
+              "queryRef": "FACT_CONTRATOS.TIPO_CONTRATO",
+              "nativeQueryRef": "TIPO_CONTRATO",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FACT_CONTRATOS"
+                    }
+                  },
+                  "Property": "Gasto Total"
+                }
+              },
+              "queryRef": "FACT_CONTRATOS.Gasto Total",
+              "nativeQueryRef": "Gasto Total"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "FACT_CONTRATOS"
+                  }
+                },
+                "Property": "Gasto Total"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "e66ec76ad9ade7b26436",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FACT_CONTRATOS"
+              }
+            },
+            "Property": "TIPO_CONTRATO"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "d5facb58b823be994a07",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "FACT_CONTRATOS"
+              }
+            },
+            "Property": "Gasto Total"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

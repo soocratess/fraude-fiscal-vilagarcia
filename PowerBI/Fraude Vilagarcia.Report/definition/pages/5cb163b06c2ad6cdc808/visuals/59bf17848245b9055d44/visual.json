@@ -1,0 +1,56 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "59bf17848245b9055d44",
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 0,
+    "height": 121.23348017621146,
+    "width": 280.52863436123351,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "FACT_CONTRATOS"
+                    }
+                  },
+                  "Property": "Total Contratos"
+                }
+              },
+              "queryRef": "FACT_CONTRATOS.Total Contratos",
+              "nativeQueryRef": "Total Contratos"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "FACT_CONTRATOS"
+                  }
+                },
+                "Property": "Total Contratos"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

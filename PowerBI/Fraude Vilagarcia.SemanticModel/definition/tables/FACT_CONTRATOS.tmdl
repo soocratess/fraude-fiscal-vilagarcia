@@ -1,0 +1,197 @@
+table FACT_CONTRATOS
+	lineageTag: 935e3490-4712-4635-8455-5c37ec244740
+
+	measure 'Total Contratos' = COUNTROWS(FACT_CONTRATOS)
+		formatString: 0
+		lineageTag: 4480bbaf-fe70-4090-a611-6d2ece62d0f1
+
+	measure 'Gasto Total' = SUM(FACT_CONTRATOS[IMPORTE_CON_IVA_EUR])
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: cb8cf2dd-fe50-4f53-8879-b88fb4cbae00
+
+	measure 'Gasto Medio' = AVERAGE(FACT_CONTRATOS[IMPORTE_CON_IVA_EUR])
+		formatString: #,0.00\ "€";-#,0.00\ "€";#,0.00\ "€"
+		lineageTag: 6f78bbdf-be86-4529-bd66-d754d5ae811a
+
+	measure 'Empresas Distintas' = DISTINCTCOUNT(FACT_CONTRATOS[NIF_CONTRATISTA])
+		formatString: 0
+		lineageTag: afa48f5e-4351-45f3-9858-aa045407b854
+
+	measure 'Contratos Cerca del Limite' = CALCULATE(COUNTROWS(FACT_CONTRATOS), FACT_CONTRATOS[FLAG_LIMITE] = "cerca_del_limite")
+		formatString: 0
+		lineageTag: 1c4a4c17-c9ec-4577-8002-e2f866533a46
+
+	measure '% Cerca del Limite' = DIVIDE([Contratos Cerca del Limite], [Total Contratos])
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		lineageTag: 9f61f9f6-e2c0-4118-90f3-7fc712c40a67
+
+	measure 'Contratos con NIF Invalido' = CALCULATE(COUNTROWS(FACT_CONTRATOS), DIM_CONTRATISTA[NIF_VALIDO] = FALSE())
+		formatString: 0
+		lineageTag: 8deb84ba-5fae-4999-aad9-d54a005d8b20
+
+	column NUM_REFERENCIA
+		dataType: string
+		lineageTag: b7a49d1d-84de-4a97-aca0-13481148f40b
+		summarizeBy: none
+		sourceColumn: NUM_REFERENCIA
+
+		annotation SummarizationSetBy = Automatic
+
+	column ANIO_CONTRATO
+		dataType: double
+		lineageTag: 3ffdc3ea-515d-4dd9-bb22-9ff90f8ec08e
+		summarizeBy: sum
+		sourceColumn: ANIO_CONTRATO
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column NUM_CONTRATO_ANIO
+		dataType: double
+		lineageTag: 4a4bbfec-7838-4962-b930-7e472f8fc576
+		summarizeBy: sum
+		sourceColumn: NUM_CONTRATO_ANIO
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column FECHA_FORMALIZACION
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: c7368108-2b5b-4273-a21c-f43988716cab
+		summarizeBy: none
+		sourceColumn: FECHA_FORMALIZACION
+
+		variation Variación
+			isDefault
+			relationship: 8b19a006-7265-4a41-aa66-ed12d49cb319
+			defaultHierarchy: LocalDateTable_c631c40e-de66-4cb3-8d07-d6f5d54f5432.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column FECHA
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 50a3aaeb-6fbd-4f9c-b243-8d7367171512
+		summarizeBy: none
+		sourceColumn: FECHA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column TIPO_CONTRATO
+		dataType: string
+		lineageTag: 26ce9783-ed34-4779-911e-a1b67812b20e
+		summarizeBy: none
+		sourceColumn: TIPO_CONTRATO
+
+		annotation SummarizationSetBy = Automatic
+
+	column NIF_CONTRATISTA
+		dataType: string
+		lineageTag: c931231c-ca0b-4f10-9b05-0c757e58d928
+		summarizeBy: none
+		sourceColumn: NIF_CONTRATISTA
+
+		annotation SummarizationSetBy = Automatic
+
+	column OBJETO_CONTRATO
+		dataType: string
+		lineageTag: 6c100f76-47fc-4c40-b186-ef88dfbcca87
+		summarizeBy: none
+		sourceColumn: OBJETO_CONTRATO
+
+		annotation SummarizationSetBy = Automatic
+
+	column PLAZO_MESES
+		dataType: double
+		lineageTag: 190f5e60-3386-4e01-b29a-fca1a4632f3b
+		summarizeBy: sum
+		sourceColumn: PLAZO_MESES
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column VALOR_ESTIMADO_EUR
+		dataType: double
+		lineageTag: 1a09631a-d6c5-45af-9708-add533fa93e4
+		summarizeBy: sum
+		sourceColumn: VALOR_ESTIMADO_EUR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column PRESUPUESTO_BASE_EUR
+		dataType: double
+		lineageTag: 1aa14868-2e01-4429-91b0-3cf6ed0b8b4b
+		summarizeBy: sum
+		sourceColumn: PRESUPUESTO_BASE_EUR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column IMPORTE_SIN_IVA_EUR
+		dataType: double
+		lineageTag: e3bb6d0b-2b39-4416-ad69-56c579a037d0
+		summarizeBy: sum
+		sourceColumn: IMPORTE_SIN_IVA_EUR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column IMPORTE_CON_IVA_EUR
+		dataType: double
+		lineageTag: c76d8a49-dc0b-4c6e-aeab-1d56a40600f9
+		summarizeBy: sum
+		sourceColumn: IMPORTE_CON_IVA_EUR
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column FLAG_LIMITE
+		dataType: string
+		lineageTag: 8a1cc9ed-ab69-43de-a579-64ab55e12bae
+		summarizeBy: none
+		sourceColumn: FLAG_LIMITE
+
+		annotation SummarizationSetBy = Automatic
+
+	column OBSERVACIONES
+		dataType: string
+		lineageTag: 9d1cf4a8-fe90-4b8c-bb28-c2577370fab2
+		summarizeBy: none
+		sourceColumn: OBSERVACIONES
+
+		annotation SummarizationSetBy = Automatic
+
+	column URL_LICITACION
+		dataType: string
+		lineageTag: 07090ba7-0b3d-49b0-9567-5a3231c91339
+		summarizeBy: none
+		sourceColumn: URL_LICITACION
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FACT_CONTRATOS = m
+		mode: import
+		source =
+				let
+				    Origen = Snowflake.Databases("aisfeil-lu45385.snowflakecomputing.com","FRAUDE_VILAGARCIA",[Implementation="2.0"]),
+				    FRAUDE_VILAGARCIA_Database = Origen{[Name="FRAUDE_VILAGARCIA",Kind="Database"]}[Data],
+				    PUBLIC_Schema = FRAUDE_VILAGARCIA_Database{[Name="PUBLIC",Kind="Schema"]}[Data],
+				    FACT_CONTRATOS_Table = PUBLIC_Schema{[Name="FACT_CONTRATOS",Kind="Table"]}[Data]
+				in
+				    FACT_CONTRATOS_Table
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,57 @@
+table DIM_CONTRATISTA
+	lineageTag: f84a89c9-8155-4378-aeef-7c210683fe60
+
+	column NIF_CONTRATISTA
+		dataType: string
+		lineageTag: 0bdcb8dc-7d36-4655-8b0a-15ae148401a6
+		summarizeBy: none
+		sourceColumn: NIF_CONTRATISTA
+
+		annotation SummarizationSetBy = Automatic
+
+	column NOMBRE_CONTRATISTA
+		dataType: string
+		lineageTag: 32654546-4d12-4c38-9759-9cf0424f5cd9
+		summarizeBy: none
+		sourceColumn: NOMBRE_CONTRATISTA
+
+		annotation SummarizationSetBy = Automatic
+
+	column NIF_VALIDO
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 2be75bc1-d43e-4995-8932-cc49b44fb1aa
+		summarizeBy: none
+		sourceColumn: NIF_VALIDO
+
+		annotation SummarizationSetBy = Automatic
+
+	column MOTIVO_INVALIDO
+		dataType: string
+		lineageTag: fbb75b99-f212-41ce-a908-27e898fd7080
+		summarizeBy: none
+		sourceColumn: MOTIVO_INVALIDO
+
+		annotation SummarizationSetBy = Automatic
+
+	column CONTRATISTAS_RAW
+		dataType: string
+		lineageTag: df63e1c0-9a02-4246-8a7f-bff7f4d17b0a
+		summarizeBy: none
+		sourceColumn: CONTRATISTAS_RAW
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DIM_CONTRATISTA = m
+		mode: import
+		source =
+				let
+				    Origen = Snowflake.Databases("aisfeil-lu45385.snowflakecomputing.com","FRAUDE_VILAGARCIA",[Implementation="2.0"]),
+				    FRAUDE_VILAGARCIA_Database = Origen{[Name="FRAUDE_VILAGARCIA",Kind="Database"]}[Data],
+				    PUBLIC_Schema = FRAUDE_VILAGARCIA_Database{[Name="PUBLIC",Kind="Schema"]}[Data],
+				    DIM_CONTRATISTA_Table = PUBLIC_Schema{[Name="DIM_CONTRATISTA",Kind="Table"]}[Data]
+				in
+				    DIM_CONTRATISTA_Table
+
+	annotation PBI_ResultType = Table
+

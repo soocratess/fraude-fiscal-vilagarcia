@@ -1,0 +1,13 @@
+relationship 8b19a006-7265-4a41-aa66-ed12d49cb319
+	joinOnDateBehavior: datePartOnly
+	fromColumn: FACT_CONTRATOS.FECHA_FORMALIZACION
+	toColumn: LocalDateTable_c631c40e-de66-4cb3-8d07-d6f5d54f5432.Date
+
+relationship AutoDetected_99852695-a30d-4015-b11d-231fdaef18fd
+	fromColumn: FACT_CONTRATOS.NIF_CONTRATISTA
+	toColumn: DIM_CONTRATISTA.NIF_CONTRATISTA
+
+relationship d56c0a51-de66-ddda-07ab-8572a437fd08
+	fromColumn: FACT_CONTRATOS.FECHA
+	toColumn: DIM_FECHA.FECHA
+

@@ -1,0 +1,85 @@
+table DIM_FECHA
+	lineageTag: 9a98f9a3-bcde-41bd-bfe0-b182be7da3f2
+	dataCategory: Time
+
+	column FECHA
+		dataType: dateTime
+		isKey
+		formatString: Long Date
+		lineageTag: 0a3fdbaa-0223-4ff2-8886-f5fba0fbdcf5
+		summarizeBy: none
+		sourceColumn: FECHA
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ANIO
+		dataType: double
+		lineageTag: 804cd052-baf5-4819-97dc-5311597f8c8a
+		summarizeBy: sum
+		sourceColumn: ANIO
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TRIMESTRE
+		dataType: double
+		lineageTag: 2cd99989-87e6-444d-a8e4-32b54e157ed0
+		summarizeBy: sum
+		sourceColumn: TRIMESTRE
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column MES
+		dataType: double
+		lineageTag: 842a2437-69da-4b70-84cf-0adf9e550c3c
+		summarizeBy: sum
+		sourceColumn: MES
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column NOMBRE_MES
+		dataType: string
+		lineageTag: b4b0b14f-2db0-4c84-b5c2-54fa40ffbf5b
+		summarizeBy: none
+		sourceColumn: NOMBRE_MES
+
+		annotation SummarizationSetBy = Automatic
+
+	column DIA_MES
+		dataType: double
+		lineageTag: 8372e7e5-f200-4467-b47f-e4fb0717b379
+		summarizeBy: sum
+		sourceColumn: DIA_MES
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column DIA_SEMANA
+		dataType: string
+		lineageTag: 781a9aef-768c-4c00-a91c-24f2280e7434
+		summarizeBy: none
+		sourceColumn: DIA_SEMANA
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DIM_FECHA = m
+		mode: import
+		source =
+				let
+				    Origen = Snowflake.Databases("aisfeil-lu45385.snowflakecomputing.com","FRAUDE_VILAGARCIA",[Implementation="2.0"]),
+				    FRAUDE_VILAGARCIA_Database = Origen{[Name="FRAUDE_VILAGARCIA",Kind="Database"]}[Data],
+				    PUBLIC_Schema = FRAUDE_VILAGARCIA_Database{[Name="PUBLIC",Kind="Schema"]}[Data],
+				    DIM_FECHA_Table = PUBLIC_Schema{[Name="DIM_FECHA",Kind="Table"]}[Data]
+				in
+				    DIM_FECHA_Table
+
+	annotation PBI_ResultType = Table
+

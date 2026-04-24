@@ -48,7 +48,7 @@ No se crearon dimensiones para `entidad_contratante` (1 único valor) ni para `t
 
 ## Limitaciones
 
-- **Sin desglose por área municipal**: el Excel publica un único valor en `entidad_contratante` para todas las filas (todo consta como "Ayuntamiento Vilagarcía de Arousa", sin subdivisión por concejalía o área). Por eso el pipeline no responde la pregunta "qué áreas gastan más" del brief — no hay datos.
+- **Sin desglose por área municipal**: el Excel publica un único valor en `entidad_contratante` para todas las filas (todo consta como "Ayuntamiento Vilagarcía de Arousa", sin subdivisión por concejalía o área). Por eso el pipeline no responde la pregunta "qué áreas gastan más" del brief — no hay datos. En el informe de Power BI se sustituye ese corte por la distribución por `TIPO_CONTRATO` (Servicios, Obras, Suministros, Privado), que es la segmentación funcional más cercana disponible.
 - La fecha estimada es sintética. Sirve para visualizaciones temporales, pero no debe usarse para afirmar en qué mes concreto se firmó un contrato que no tiene fecha real.
 - El dataset cubre 2021-2023 principalmente; hay pocos contratos de años anteriores.
 
